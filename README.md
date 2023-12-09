@@ -4,6 +4,8 @@
 
 本项目是使用 [beego v2](https://github.com/beego/beego) 和 [arco.desin vue3](https://arco.design/) 对 [casdoor](https://github.com/casbin/casdoor) 的二次实现。
 
+本项目需要配合 hopomi/icasdoor-web 使用。
+
 ## 用到的的工具
 
 1. [postgres]()
