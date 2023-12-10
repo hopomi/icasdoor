@@ -44,3 +44,8 @@ routers/commentsRouter.go
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+docker/data
+docker/epoint
+
+files/rsa

@@ -4,11 +4,17 @@ go 1.21
 
 require github.com/beego/beego/v2 v2.1.0
 
-require github.com/smartystreets/goconvey v1.6.4
+require (
+	github.com/golang-jwt/jwt/v5 v5.2.0
+	github.com/lib/pq v1.10.5
+	github.com/redis/go-redis/v9 v9.3.0
+	github.com/smartystreets/goconvey v1.6.4
+)
 
 require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20181017120253-0766667cb4d1 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect

@@ -1,0 +1,21 @@
+version: "3.0"
+services:
+  icasdoor_db:
+    image: docker.io/postgres:latest
+    ports:
+      - "5432:5432"
+    restart: always
+    volumes:
+      - ./data:/var/lib/postgresql/data
+      - ./epoint:/docker-entrypoint-initdb.d/
+    environment:
+      POSTGRES_USER: icasdoor
+      POSTGRES_PASSWORD: icasdoor
+      POSTGRES_DB: icasdoor
+
+  icasdoor_redis:
+    image: docker.io/redis:latest
+    ports:
+      - "6379:6379"
+    restart: always
+    command: redis-server --requirepass "icasdoor"
