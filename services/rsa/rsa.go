@@ -22,7 +22,7 @@ func GenRsa() (priKey, pubKey []byte) {
 
 	// 生成 public key
 	publicKey := &privateKey.PublicKey
-	derPkix, err := x509.MarshalPKIXPublicKey(publicKey)
+	derPkix := x509.MarshalPKCS1PublicKey(publicKey)
 	if err != nil {
 		panic(err)
 	}

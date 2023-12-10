@@ -33,13 +33,12 @@ func parsePriKeyBytes(buf []byte) (*rsa.PrivateKey, error) {
 	return x509.ParsePKCS1PrivateKey(p.Bytes)
 }
 
-func parsePubKeyBytes(pub_key []byte) (any, error) {
+func parsePubKeyBytes(pub_key []byte) (*rsa.PublicKey, error) {
 	block, _ := pem.Decode(pub_key)
 	if block == nil {
 		return nil, errors.New("block nil")
 	}
-	return x509.ParsePKIXPublicKey(block.Bytes)
-
+	return x509.ParsePKCS1PublicKey(block.Bytes)
 }
 
 func ValidJwt(token_string string) (*models.CommonClaims, error) {

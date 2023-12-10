@@ -49,3 +49,5 @@ docker/data
 docker/epoint
 
 files/rsa
+
+main_test.go
