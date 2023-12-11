@@ -4,6 +4,7 @@ import (
 	"context"
 	"icasdoor/api/payload"
 	"icasdoor/boot"
+	"icasdoor/services/auth"
 	"icasdoor/services/jwt"
 
 	beego "github.com/beego/beego/v2/server/web"
@@ -19,13 +20,27 @@ func (o *AuthController) tokenInBlackList(token string) bool {
 }
 
 // @Title GenJwt
-// @Description redis get
+// @Description 登录、验证
 // @Param	body		body 	payload.GenJwtReq	true	"The object content"
 // @Success 200 {object} payload.GenJwtResp
 // @router /jwt/gen [post]
 func (o *AuthController) GenJwt() {
 	var err error
-	s, err := jwt.GenJwt()
+	var payload payload.GenJwtReq
+	o.BindJSON(&payload)
+	authService := new(auth.AuthService)
+	valid, err := authService.ValidUsernameAndPasswd(payload.Username, payload.Password)
+	if !valid || err != nil {
+		auth.UnAuthentication403(&o.Controller, "username or password invalid")
+		return
+	}
+	user, err := authService.GetUser()
+	if err != nil {
+		auth.UnAuthentication403(&o.Controller, "username or password invalid")
+		o.ServeJSON()
+		return
+	}
+	s, err := jwt.GenJwt(int(user.Id), user.Username)
 	if err != nil {
 		panic(err)
 	}
@@ -34,7 +49,7 @@ func (o *AuthController) GenJwt() {
 }
 
 // @Title ValidJwt
-// @Description redis get
+// @Description 验证、解码
 // @Param	body		body 	payload.ValidJwtReq	true	"The object content"
 // @Success 200 {object} payload.ValidJwtReq
 // @router /jwt/valid [post]
@@ -46,9 +61,7 @@ func (o *AuthController) ValidJwt() {
 		panic(err)
 	}
 	if o.tokenInBlackList(req.Token) {
-		o.Ctx.Output.SetStatus(403)
-		o.Data["json"] = map[string]interface{}{"message": "invalid, token in black list"}
-		o.ServeJSON()
+		auth.UnAuthentication403(&o.Controller, "invalid, token in black list")
 		return
 	}
 	o.Data["json"], err = jwt.ValidJwt(req.Token)
@@ -59,7 +72,7 @@ func (o *AuthController) ValidJwt() {
 }
 
 // @Title RefreshJwt
-// @Description redis get
+// @Description 刷新
 // @Param	body		body 	payload.ValidJwtReq	true	"The object content"
 // @Success 200 {object} payload.ValidJwtReq
 // @router /jwt/refresh [post]
@@ -70,17 +83,15 @@ func (o *AuthController) RefreshJwt() {
 	if err != nil {
 		panic(err)
 	}
-	_, err = jwt.ValidJwt(req.Token)
+	claims, err := jwt.ValidJwt(req.Token)
 	if err != nil {
 		panic(err)
 	}
 	if o.tokenInBlackList(req.Token) {
-		o.Ctx.Output.SetStatus(403)
-		o.Data["json"] = map[string]interface{}{"message": "invalid, token in black list"}
-		o.ServeJSON()
+		auth.UnAuthentication403(&o.Controller, "invalid, token in black list")
 		return
 	}
-	s, err := jwt.GenJwt()
+	s, err := jwt.GenJwt(claims.UserID, claims.Username)
 	if err != nil {
 		panic(err)
 	}

@@ -66,14 +66,14 @@ func ValidJwt(token_string string) (*models.CommonClaims, error) {
 	return claims, nil
 }
 
-func GenJwt() (string, error) {
+func GenJwt(userId int, username string) (string, error) {
 	claim := models.CommonClaims{
-		UserID:     000001,
-		Username:   "Tom",
+		UserID:     userId,
+		Username:   username,
 		GrantScope: "read_user_info",
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    "Auth_Server",                                      // 签发者
-			Subject:   "Tom",                                              // 签发对象
+			Subject:   username,                                           // 签发对象
 			Audience:  jwt.ClaimStrings{"Android_APP", "IOS_APP"},         //签发受众
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 10)), //过期时间
 			NotBefore: jwt.NewNumericDate(time.Now().Add(time.Second)),    //最早使用时间
