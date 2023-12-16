@@ -44,7 +44,7 @@ func (o *AuthController) GenJwt() {
 	if err != nil {
 		panic(err)
 	}
-	o.Data["json"] = s
+	o.Data["json"] = map[string]interface{}{"code": 20000, "data": map[string]interface{}{"data": s}}
 	o.ServeJSON()
 }
 

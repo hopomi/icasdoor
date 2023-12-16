@@ -36,7 +36,7 @@ func OrmSyncRegister() {
 
 func CreatDefaultSuperUser() {
 	o := orm.NewOrm()
-	passwd, err := passwd.GenPasswordMD5("a0123456")
+	passwd, err := passwd.GenPasswordMD5("icasdoor")
 	user := models.Users{Username: "icasdoor", Password: passwd, IsSupper: true, IsStuff: true}
 	if err != nil {
 		panic(err)
